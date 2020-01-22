@@ -8,9 +8,14 @@ ENV BITNAMI_PKG_CHMOD="-R g+rwX" \
 
 COPY prebuildfs /
 # Install required system packages and dependencies
-RUN install_packages ca-certificates curl dirmngr gnupg libbsd0 libbz2-1.0 libc6 libcomerr2 libedit2 libffi6 libgcc1 libgmp10 libgnutls30 libgssapi-krb5-2 libhogweed4 libicu57 libidn11 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap-2.4-2 liblzma5 libmariadbclient18 libncurses5 libnettle6 libnss-wrapper libp11-kit0 libreadline7 libsasl2-2 libsqlite3-0 libssl1.1 libstdc++6 libtasn1-6 libtinfo5 libuuid1 libxml2 libxslt1.1 procps sudo unzip zlib1g
+RUN install_packages ca-certificates curl dirmngr gnupg libbsd0 libbz2-1.0 libc6 libcomerr2 libedit2 libffi6 libgcc1 libgmp10 libgnutls30 libgssapi-krb5-2 libhogweed4 libicu57 libidn11 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap-2.4-2 liblzma5 libmariadbclient18 libncurses5 libnettle6 libnss-wrapper libp11-kit0 libreadline7 libsasl2-2 libsqlite3-0 libssl1.1 libstdc++6 libtasn1-6 libtinfo5 libuuid1 libxml2 libxslt1.1 procps sudo unzip zlib1g locales
 RUN /build/bitnami-user.sh && \
     /build/install-nami.sh
+
+RUN sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
+    && locale-gen \
+    && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
 RUN bitnami-pkg install python-3.6.10-0 --checksum 3d7e860761a828ac03c631386b6711433e07bd96d6184d73c11f59d6a7e3b480
 RUN bitnami-pkg install postgresql-client-10.11.0-0 --checksum 134b5a1d358c7684f9f89e3b5ec6d1bd1e814e23e335af88930295e7dd2d2587
 RUN bitnami-pkg unpack airflow-worker-1.10.7-0 --checksum bdeac3be58a9c5ca55cb4e595191244907638acfec6454f6f57095946c061bf8
@@ -46,7 +51,12 @@ ENV AIRFLOW_DATABASE_HOST="postgresql" \
     REDIS_HOST="redis" \
     REDIS_PASSWORD="" \
     REDIS_PORT_NUMBER="6379" \
-    REDIS_USER=""
+    REDIS_USER="" \
+    LANGUAGE=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    LC_CTYPE=en_US.UTF-8 \
+    LC_MESSAGES=en_US.UTF-8
 
 EXPOSE 8793
 
